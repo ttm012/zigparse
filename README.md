@@ -10,6 +10,13 @@ Extracts text from PDF, CSV, TSV, JSON, and plain text files — no external lib
 
 ---
 
+> [!NOTE]
+> **Built with Qwen** — this project was written and refined with the assistance of [Qwen Code](https://qwen.ai), an AI coding agent. Every line of code was reviewed, compiled, tested, and iterated on until it worked correctly. This is what AI-assisted development looks like in practice: a human directs, the AI writes, and together they ship.
+>
+> **Inspired by [docparse](https://github.com/ttm012/docparse)** — a minimal document parser that proved the concept. This project extends the idea with a modular architecture, proper `zig build` system, hardened edge-case handling, and a full test suite.
+
+---
+
 ## The Problem
 
 Need to quickly check what's inside a PDF? Extract a table from a CSV on a server without Python? Read text from a binary log file?
