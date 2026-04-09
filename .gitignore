@@ -1,0 +1,4 @@
+docparse
+docparse-debug
+*.o
+*.cache
