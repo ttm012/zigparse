@@ -39,9 +39,13 @@ cat data.csv | docparse csv -
 ```bash
 git clone https://github.com/mrmmdl/docparse.git
 cd docparse
-zig build-exe src/main.zig -O ReleaseSmall -fstrip --name docparse
-./docparse --help
+zig build -Doptimize=ReleaseSmall
+./zig-out/bin/docparse --help
 ```
+
+### Pre-built binary
+
+Download from [Releases](https://github.com/mrmmdl/docparse/releases).
 
 ### Requirements
 
@@ -52,33 +56,48 @@ zig build-exe src/main.zig -O ReleaseSmall -fstrip --name docparse
 
 | Format | Method | Notes |
 |--------|--------|-------|
-| PDF | Text stream extraction | Handles BT/ET objects, raw ASCII streams |
-| CSV | Full parser | Quoted fields, escaped quotes, multi-line |
+| PDF | Text stream extraction | BT/ET objects, hex strings, raw ASCII fallback |
+| CSV | Full parser | Quoted fields, escaped quotes, multi-line cells, BOM handling |
 | TSV | Full parser | Same as CSV, tab-delimited |
 | JSON | Passthrough | Ready for piping to other tools |
-| Plain text | Binary stripping | Removes non-printable characters |
-| DOCX/XLSX/PPTX | Detection only | ZIP-based — use unzip + parse XML |
+| Plain text | Binary stripping | Removes non-printable characters, collapses whitespace |
+| DOCX/XLSX/PPTX | Detection only | ZIP-based — unzip tips provided |
 
 ## Architecture
 
 ```
 src/
-├── main.zig      — CLI entry point, argument parsing
-├── pdf.zig       — PDF text extraction (BT/ET, stream scan)
+├── main.zig      — CLI entry point, argument parsing, file I/O
+├── pdf.zig       — PDF text extraction (BT/ET, hex strings, ASCII fallback)
 ├── table.zig     — CSV/TSV parser with quoted field support
-├── json.zig      — JSON passthrough
-├── text.zig      — Binary-to-text extractor
+├── text.zig      — Binary-to-text extractor (single-pass)
 └── detect.zig    — Format auto-detection (magic bytes + heuristics)
 ```
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for details.
+
+## Building
+
+```bash
+# Optimized release build (~70KB binary)
+zig build -Doptimize=ReleaseSmall
+
+# Debug build (with stack traces)
+zig build -Doptimize=Debug
+
+# Run
+zig build run -- pdf report.pdf
+
+# Run tests
+zig build test
+```
 
 ## Performance
 
 | Operation | Time | Notes |
 |-----------|------|-------|
 | Startup | <5ms | Static binary, no runtime init |
-| PDF extract | ~1ms/MB | Linear stream scan |
+| PDF extract | ~1ms/MB | Linear stream scan, O(n) |
 | CSV parse | ~0.5ms/MB | Single-pass |
 | 10K row CSV | ~50ms | Including output formatting |
 | Binary size | 72KB | ReleaseSmall + strip |
@@ -109,7 +128,7 @@ All output goes to stdout. This follows the Unix philosophy — pipe to `grep`, 
 ## What This Is NOT
 
 - A complete PDF parser — it extracts text, not the full document structure
-- A spreadsheet calculator — it reads tables, doesn't evaluate formulas  
+- A spreadsheet calculator — it reads tables, doesn't evaluate formulas
 - A word processor — it doesn't render DOCX formatting
 - An OCR engine — scanned images of text are not supported
 

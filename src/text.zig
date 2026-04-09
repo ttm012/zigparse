@@ -1,41 +1,46 @@
 const std = @import("std");
 
-// ─── Plain text extraction ───
-// Strips non-printable characters, collapses whitespace.
+/// Extracts readable text from any file by stripping non-printable bytes.
+/// Single-pass: strips binary and collapses whitespace simultaneously.
 
-pub fn extract(data: []const u8) !void {
-    var buf = std.ArrayList(u8).init(std.heap.page_allocator);
-    defer buf.deinit();
+pub fn extract(alloc: std.mem.Allocator, data: []const u8) !void {
+    var out = std.ArrayList(u8).init(alloc);
+    defer out.deinit();
 
+    var prev_space = false;
     for (data) |b| {
         if (b >= 0x20 and b <= 0x7E) {
-            try buf.append(b);
-        } else if (b == '\n' or b == '\r' or b == '\t') {
-            try buf.append(b);
-        } else if (buf.items.len > 0 and buf.items[buf.items.len - 1] != ' ') {
-            try buf.append(' ');
-        }
-    }
-
-    // Collapse multiple spaces/tabs
-    var clean = std.ArrayList(u8).init(std.heap.page_allocator);
-    defer clean.deinit();
-    var prev_space = false;
-    for (buf.items) |b| {
-        if (b == ' ' or b == '\t') {
+            // Printable ASCII
+            prev_space = false;
+            try out.append(b);
+        } else if (b == '\n' or b == '\r') {
+            // Newlines preserved (collapse multiples)
+            if (out.items.len > 0 and
+                out.items[out.items.len - 1] != '\n' and
+                out.items[out.items.len - 1] != '\r')
+            {
+                try out.append('\n');
+            }
+            prev_space = false;
+        } else if (b == '\t') {
+            // Tabs become spaces
             if (!prev_space) {
-                try clean.append(' ');
+                try out.append(' ');
                 prev_space = true;
             }
         } else {
-            prev_space = false;
-            try clean.append(b);
+            // Binary byte → space (collapse multiples)
+            if (!prev_space) {
+                try out.append(' ');
+                prev_space = true;
+            }
         }
     }
 
-    std.debug.print("{s}\n", .{clean.items});
+    std.debug.print("{s}\n", .{out.items});
 }
 
-pub fn print(data: []const u8) !void {
+/// Pass-through: print data as-is. Used for JSON and similar formats.
+pub fn print(data: []const u8) void {
     std.debug.print("{s}\n", .{data});
 }

@@ -1,24 +1,16 @@
-ZIG ?= $(HOME)/bin/zig
+.PHONY: all test clean install debug
 
-.PHONY: all test clean install
+all:
+	zig build -Doptimize=ReleaseSmall
 
-SRC = src/main.zig
-OUT = docparse
+debug:
+	zig build -Doptimize=Debug
 
-all: $(OUT)
-
-$(OUT): $(SRC) src/pdf.zig src/table.zig src/text.zig src/detect.zig
-	$(ZIG) build-exe $< -O ReleaseSmall -fstrip --name $(OUT)
-	@echo "Built $(OUT) ($$(du -h $(OUT) | cut -f1))"
-
-debug: $(SRC) src/pdf.zig src/table.zig src/text.zig src/detect.zig
-	$(ZIG) build-exe $< -O Debug --name $(OUT)-debug
-
-test: $(OUT)
+test: all
 	bash tests/run.sh
 
-install: $(OUT)
-	cp $(OUT) /usr/local/bin/
+install: all
+	cp zig-out/bin/docparse /usr/local/bin/
 
 clean:
-	rm -f $(OUT) $(OUT)-debug
+	rm -rf zig-out zig-cache

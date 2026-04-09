@@ -1,4 +1,4 @@
-docparse
-docparse-debug
+zig-out/
+zig-cache/
 *.o
-*.cache
+*.sym
