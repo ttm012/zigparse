@@ -54,13 +54,13 @@ fn detectOfficeFormat(file: []const u8) void {
 
     if (std.mem.eql(u8, name, "xlsx") or std.mem.eql(u8, name, "xls")) {
         std.debug.print("\x1b[1;32mXLSX\x1b[0m (Excel spreadsheet)\n", .{});
-        std.debug.print("Tip: unzip -p {s} xl/sharedStrings.xml | docparse text -\n", .{file});
+        std.debug.print("Tip: unzip -p {s} xl/sharedStrings.xml | zigparse text -\n", .{file});
     } else if (std.mem.eql(u8, name, "docx") or std.mem.eql(u8, name, "doc")) {
         std.debug.print("\x1b[1;35mDOCX\x1b[0m (Word document)\n", .{});
-        std.debug.print("Tip: unzip -p {s} word/document.xml | docparse text -\n", .{file});
+        std.debug.print("Tip: unzip -p {s} word/document.xml | zigparse text -\n", .{file});
     } else if (std.mem.eql(u8, name, "pptx") or std.mem.eql(u8, name, "ppt")) {
         std.debug.print("\x1b[1;33mPPTX\x1b[0m (PowerPoint presentation)\n", .{});
-        std.debug.print("Tip: unzip -p {s} ppt/slides/slide*.xml | docparse text -\n", .{file});
+        std.debug.print("Tip: unzip -p {s} ppt/slides/slide*.xml | zigparse text -\n", .{file});
     } else {
         std.debug.print("\x1b[1mZIP\x1b[0m archive\n", .{});
     }

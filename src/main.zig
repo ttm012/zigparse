@@ -53,10 +53,10 @@ fn parseCmd(s: []const u8) Cmd {
 
 fn usage() void {
     std.debug.print(
-        \\docparse — fast document parser (Zig, 0 deps)
+        \\zigparse — fast document parser (Zig, 0 deps)
         \\
-        \\Usage: docparse <format> <file>
-        \\       docparse <format> -        (read from stdin)
+        \\Usage: zigparse <format> <file>
+        \\       zigparse <format> -        (read from stdin)
         \\
         \\Formats:
         \\  pdf     Extract text from PDF files
@@ -67,10 +67,10 @@ fn usage() void {
         \\  detect  Auto-detect format and parse
         \\
         \\Examples:
-        \\  docparse pdf report.pdf
-        \\  docparse csv data.csv
-        \\  cat data.csv | docparse csv -
-        \\  docparse detect unknown_file
+        \\  zigparse pdf report.pdf
+        \\  zigparse csv data.csv
+        \\  cat data.csv | zigparse csv -
+        \\  zigparse detect unknown_file
         \\
     , .{});
 }

@@ -20,7 +20,7 @@ pub fn build(b: *std.Build) !void {
         run_cmd.addArgs(args);
     }
 
-    const run_step = b.step("run", "Run docparse");
+    const run_step = b.step("run", "Run zigparse");
     run_step.dependOn(&run_cmd.step);
 
     const test_step = b.step("test", "Run test suite");
