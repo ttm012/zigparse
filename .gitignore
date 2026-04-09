@@ -2,3 +2,5 @@ zig-out/
 zig-cache/
 *.o
 *.sym
+zig-out/
+.zig-cache/
