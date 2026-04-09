@@ -2,7 +2,7 @@
 
 ## Overview
 
-docparse is a single-purpose CLI tool: read a file, detect its format, extract text. It does one thing and does it without external dependencies.
+zigparse is a single-purpose CLI tool: read a file, detect its format, extract text. It does one thing and does it without external dependencies.
 
 ```
 stdin/file → main.zig → dispatch → [pdf.zig | table.zig | text.zig | detect.zig] → stdout

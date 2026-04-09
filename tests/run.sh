@@ -1,15 +1,15 @@
 #!/bin/bash
-# docparse test suite
+# zigparse test suite
 set -e
 
-BIN="./docparse"
+BIN="./zigparse"
 PASS=0
 FAIL=0
 
 pass() { echo -e "\033[32m  ✓ $1\033[0m"; PASS=$((PASS + 1)); }
 fail() { echo -e "\033[31m  ✗ $1\033[0m"; FAIL=$((FAIL + 1)); }
 
-echo -e "\n\033[1;34m═══ docparse test suite\033[0m\n"
+echo -e "\n\033[1;34m═══ zigparse test suite\033[0m\n"
 
 # ─── CSV ───
 echo -e "\033[1mCSV parser\033[0m"

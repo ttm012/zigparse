@@ -1,4 +1,4 @@
-# docparse
+# zigparse
 
 > Fast document parser written in Zig. ~70KB static binary. Zero dependencies.
 
@@ -27,7 +27,7 @@ npm install puppeteer
 ## The Solution
 
 ```bash
-docparse pdf report.pdf
+zigparse pdf report.pdf
 ```
 
 One binary. 72KB. Nothing else.
@@ -57,16 +57,16 @@ One binary. 72KB. Nothing else.
 
 ```bash
 # Extract text from a PDF
-docparse pdf annual_report.pdf
+zigparse pdf annual_report.pdf
 
 # Parse a CSV table (headers highlighted in cyan)
-docparse csv sales_2024.csv
+zigparse csv sales_2024.csv
 
 # Auto-detect format and parse
-docparse detect mystery_file
+zigparse detect mystery_file
 
 # Pipe data directly
-cat export.csv | docparse csv -
+cat export.csv | zigparse csv -
 ```
 
 ---
@@ -75,31 +75,31 @@ cat export.csv | docparse csv -
 
 ### Option 1: Download a release (recommended)
 
-Check the [Releases](https://github.com/ttm012/docparse/releases) page for pre-built binaries for your platform.
+Check the [Releases](https://github.com/ttm012/zigparse/releases) page for pre-built binaries for your platform.
 
 ### Option 2: Build from source
 
 Requires [Zig 0.13.0+](https://ziglang.org/download/):
 
 ```bash
-git clone https://github.com/ttm012/docparse.git
-cd docparse
+git clone https://github.com/ttm012/zigparse.git
+cd zigparse
 zig build -Doptimize=ReleaseSmall
-./zig-out/bin/docparse --help
+./zig-out/bin/zigparse --help
 ```
 
 ### Option 3: Install globally
 
 ```bash
 zig build -Doptimize=ReleaseSmall
-sudo cp zig-out/bin/docparse /usr/local/bin/
+sudo cp zig-out/bin/zigparse /usr/local/bin/
 ```
 
 ---
 
 ## Commands
 
-### `docparse pdf <file>`
+### `zigparse pdf <file>`
 
 Extracts readable text from PDF files.
 
@@ -110,7 +110,7 @@ Extracts readable text from PDF files.
 4. Falls back to raw ASCII if no text operators found
 
 ```bash
-docparse pdf document.pdf
+zigparse pdf document.pdf
 ```
 
 **Handles:**
@@ -124,12 +124,12 @@ docparse pdf document.pdf
 - FlateDecode-compressed binary streams
 - Form fields and annotations
 
-### `docparse csv <file>`
+### `zigparse csv <file>`
 
 Parses comma-separated files and prints a formatted table with highlighted headers.
 
 ```bash
-$ docparse csv employees.csv
+$ zigparse csv employees.csv
 name             │ department    │ salary   │
 Alice Johnson    │ Engineering   │ 95000    │
 Bob Smith        │ Marketing     │ 72000    │
@@ -144,36 +144,36 @@ Carol Williams   │ Engineering   │ 98000    │
 - UTF-8 BOM at the start of the file
 - Windows (`\r\n`) and Unix (`\n`) line endings
 
-### `docparse tsv <file>`
+### `zigparse tsv <file>`
 
 Same as CSV, but tab-delimited. Identical feature set.
 
 ```bash
-docparse tsv export.tsv
+zigparse tsv export.tsv
 ```
 
-### `docparse json <file>`
+### `zigparse json <file>`
 
 Outputs JSON content as-is. Useful as part of a pipeline:
 
 ```bash
-docparse json config.json | jq '.database.host'
+zigparse json config.json | jq '.database.host'
 ```
 
-### `docparse text <file>`
+### `zigparse text <file>`
 
 Strips non-printable bytes from any file, collapses consecutive whitespace. Useful for reading binary files that contain embedded text.
 
 ```bash
-docparse text binary_blob.dat
+zigparse text binary_blob.dat
 ```
 
-### `docparse detect <file>`
+### `zigparse detect <file>`
 
 Auto-detects the file format using magic bytes, file extension, and content heuristics — then parses accordingly.
 
 ```bash
-$ docparse detect unknown_file
+$ zigparse detect unknown_file
 PDF — extracting text
 
 ... text output ...
@@ -184,32 +184,32 @@ PDF — extracting text
 2. File extension (`.xlsx`, `.docx`, `.pptx`)
 3. Content heuristics (commas → CSV, tabs → TSV, `{`/`[` → JSON)
 
-For Office files (DOCX, XLSX, PPTX), docparse detects the format and prints the correct `unzip` command to extract the XML content.
+For Office files (DOCX, XLSX, PPTX), zigparse detects the format and prints the correct `unzip` command to extract the XML content.
 
 ---
 
 ## Pipes & Redirection
 
-docparse follows the Unix philosophy — read from stdin, write to stdout.
+zigparse follows the Unix philosophy — read from stdin, write to stdout.
 
 ```bash
 # Chain with other tools
-docparse csv data.csv | grep "Engineering"
+zigparse csv data.csv | grep "Engineering"
 
 # Pipe from curl
-curl -s https://example.com/data.csv | docparse csv -
+curl -s https://example.com/data.csv | zigparse csv -
 
 # Pipe from unzip (for Office files)
-unzip -p report.docx word/document.xml | docparse text -
+unzip -p report.docx word/document.xml | zigparse text -
 
 # Combine with jq
-docparse json data.json | jq '.items[] | .name'
+zigparse json data.json | jq '.items[] | .name'
 
 # Save output
-docparse pdf report.pdf > report.txt
+zigparse pdf report.pdf > report.txt
 ```
 
-The `-` argument tells docparse to read from stdin instead of a file.
+The `-` argument tells zigparse to read from stdin instead of a file.
 
 ---
 
@@ -254,7 +254,7 @@ make debug    # build with debug symbols
 
 ## Architecture
 
-docparse is organized as a set of focused modules, each responsible for one format:
+zigparse is organized as a set of focused modules, each responsible for one format:
 
 ```
 src/
@@ -322,7 +322,7 @@ For detailed design decisions and tradeoffs, see [docs/ARCHITECTURE.md](docs/ARC
 | Word processor (formatting, styles) | [LibreOffice](https://www.libreoffice.org/) |
 | XML parser for DOCX internals | `unzip` + standard XML tools |
 
-docparse covers the 80% case: *"What text is in this file?"* — fast, reliably, with zero setup.
+zigparse covers the 80% case: *"What text is in this file?"* — fast, reliably, with zero setup.
 
 ---
 
